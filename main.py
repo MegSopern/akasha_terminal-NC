@@ -146,16 +146,32 @@ class AkashaTerminal(Star):
     async def get_daily_task(self, event: AstrMessageEvent):
         """领取日常任务"""
         user_id = str(event.get_sender_id())
-        task = await self.task_system.assign_daily_task(user_id)
-        if task:
-            message = (
-                f"已为你分配日常任务：\n"
-                f"【{task['name']}】\n"
-                f"描述：{task['description']}\n"
-                f"奖励：{task['reward']}"
-            )
+        # 检查是否已有活跃的日常任务
+        quest_data = await self.user_system.get_quest_data(user_id)
+        daily_tasks = quest_data.get("daily", {})
+        if daily_tasks:
+            for task_id in daily_tasks.keys():
+                active_task = await self.task_system.get_task_by_id(task_id)
+            if active_task:
+                message = (
+                    f"你已有一个未完成的日常任务：\n"
+                    f"【{active_task['name']}】\n"
+                    f"描述：{active_task['description']}\n"
+                    f"奖励：{active_task['reward']}\n"
+                    f"请完成当前任务后再领取新的任务"
+                )
         else:
-            message = "获取任务失败，请稍后再试"
+            # 没有活跃任务，分配新任务
+            task = await self.task_system.assign_daily_task(user_id)
+            if task:
+                message = (
+                    f"已为你分配日常任务：\n"
+                    f"【{task['name']}】\n"
+                    f"描述：{task['description']}\n"
+                    f"奖励：{task['reward']}"
+                )
+            else:
+                message = "获取任务失败，请稍后再试"
         yield event.plain_result(message)
 
     @filter.command("我的任务", alias="查看任务")

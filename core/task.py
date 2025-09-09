@@ -25,7 +25,7 @@ class Task:
         self.task_file_path = Path(__file__).parent.parent / "data" / "task.json"
         self.task_data: Dict[str, Dict[str, Any]] = {}
         self.user_system = User()  # 关联用户系统
-        self._load_task_data()
+        read_json(self.task_file_path)
 
     async def _load_task_data(self) -> None:
         """加载任务配置数据,从JSON文件读取任务定义并初始化"""
@@ -57,10 +57,10 @@ class Task:
         :param task_id: 任务ID（如"daily_work"）
         :return: 任务字典或None
         """
-        for task in self.task_data.values():
-            if task.get("id") == task_id:
-                return task
-        return None
+        return next(
+            (task for task in self.task_data.values() if task.get("id") == task_id),
+            None,
+        )
 
     async def check_task_completion(self, user_id: str, action: str) -> Dict[str, Any]:
         """
