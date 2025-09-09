@@ -18,6 +18,7 @@
 		 "money":"300",
 		 "items":{"4":1},
 		 "quest_points":"8"
+	}
 },
 "3":{
 	"id":"daily_synthesis",
@@ -57,4 +58,4 @@
 		"quest_points":"15"
 	}
 }
-}}
+}
