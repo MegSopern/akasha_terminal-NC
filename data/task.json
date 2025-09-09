@@ -10,7 +10,19 @@
 		"quest_points":"10"
 	}
 },
+
 "2":{
+	"id":"daily_date",
+	"name":"浪漫约会",
+		"description": "进行1次约会",
+	"reward":{
+		"love":"100",
+		"items":{"1":2},
+		"quest_points":"15"
+	}
+},
+
+"3":{
 	"id":"daily_shop",
 	"name":"购物达人",
 	"description": "在商店购买3件道具",
@@ -19,7 +31,8 @@
 		 "items":{"4":1},
 		 "quest_points":"8"
 },
-"3":{
+
+"4":{
 	"id":"daily_synthesis",
 	"name":"合成大师",
 	"description":"成功合成2个道具",
@@ -29,14 +42,7 @@
 		"quest_points":"20"
 	}
 },
-"4":{
-	"id":"weekly_relationship",
-	"name":"社交达人",
-	"description":"与5个不同的人互动",
-	"reward":{
-		"money":"1500"
-	}	
-},
+
 "5":{
 	"id":"daily_gift",
 	"name":"慷慨之心",
@@ -47,14 +53,16 @@
 		"quest_points":"12"
 	}
 },
+
 "6":{
-	"id":"daily_date",
-	"name":"浪漫约会",
-		"description": "进行1次约会",
+	"id":"weekly_relationship",
+	"name":"社交达人",
+	"description":"与5个不同的人互动",
 	"reward":{
-		"love":"100",
-		"items":{"1":2},
-		"quest_points":"15"
+		"money":"1500"
 	}
+		
 }
+
+
 }}
