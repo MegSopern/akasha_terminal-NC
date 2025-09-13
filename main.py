@@ -59,19 +59,9 @@ class AkashaTerminal(Star):
                 user_id = str(input_id)
             else:
                 user_id = str(user_id)
-            user_data = await self.user_system.get_user(user_id)
-            battle_data = await self.user_system.get_battle_data(user_id)
-            home_data = await self.user_system.get_home_data(user_id)
 
-            message = (
-                f"用户信息:\n"
-                f"ID: {user_id}\n"
-                f"等级: {user_data.get('level', 1)}\n"
-                f"经验: {battle_data.get('experience', 0)}\n"
-                f"金钱: {home_data.get('money', 0)}\n"
-                f"好感度: {home_data.get('love', 0)}"
-            )
-
+            # 调用用户系统的格式化方法
+            message = await self.user_system.format_user_info(user_id)
             yield event.plain_result(message)
         except Exception as e:
             logger.error(f"获取用户信息失败: {str(e)}")
@@ -85,7 +75,7 @@ class AkashaTerminal(Star):
         """增加用户金钱，使用方法: /增加金钱 金额"""
         try:
             user_id = event.get_sender_id()
-            # 用正则提取金额（支持中文、空格、@等混合输入）
+            # 用正则提取金额
             if match := re.findall(r"(\d+)", event.message_str):
                 amount = int(match[0])
             else:
@@ -93,9 +83,8 @@ class AkashaTerminal(Star):
                     "请指定金额，使用方法:/增加金钱 金额 qq 或 /增加金钱 金额 @用户"
                 )
                 return
-            if amount <= 0:
-                yield event.plain_result("金额必须为正整数")
-                return
+
+            # 确定目标用户
             if at_id := next(
                 (
                     str(seg.qq)
@@ -111,16 +100,10 @@ class AkashaTerminal(Star):
                 user_id = str(input_id)
             else:
                 user_id = str(user_id)
-            # 获取当前家园数据
-            home_data = await self.user_system.get_home_data(user_id)
-            # 更新金钱
-            home_data["money"] = home_data.get("money", 0) + amount
-            # 保存数据
-            await self.user_system.update_home_data(user_id, home_data)
 
-            yield event.plain_result(
-                f"成功增加 {amount} 金钱，当前金钱: {home_data['money']}"
-            )
+            # 调用用户系统的增加金钱方法
+            success, message = await self.user_system.add_money(user_id, amount)
+            yield event.plain_result(message)
         except ValueError:
             yield event.plain_result("金额必须是数字")
         except Exception as e:
@@ -131,17 +114,9 @@ class AkashaTerminal(Star):
     @filter.command("用户列表")
     async def list_all_users(self, event: AstrMessageEvent):
         """获取所有用户列表"""
-        try:
-            user_list = await self.user_system.get_user_list()
-            if not user_list:
-                yield event.plain_result("暂无用户数据")
-                return
-
-            message = "用户列表:\n" + "\n".join(user_list)
-            yield event.plain_result(message)
-        except Exception as e:
-            logger.error(f"获取用户列表失败: {str(e)}")
-            yield event.plain_result(f"操作失败: {str(e)}")
+        # 调用用户系统的获取所有用户信息方法
+        message = await self.user_system.get_all_users_info()
+        yield event.plain_result(message)
 
     async def terminate(self):
         """可选择实现异步的插件销毁方法，当插件被卸载/停用时会调用。"""

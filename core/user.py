@@ -198,3 +198,60 @@ class User:
         except Exception as e:
             logger.error(f"获取用户列表失败: {str(e)}")
             return []
+
+    async def format_user_info(self, user_id: str) -> str:
+        """格式化用户信息为字符串"""
+        try:
+            user_data = await self.get_user(user_id)
+            battle_data = await self.get_battle_data(user_id)
+            home_data = await self.get_home_data(user_id)
+
+            return (
+                f"用户信息:\n"
+                f"ID: {user_id}\n"
+                f"等级: {user_data.get('level', 1)}\n"
+                f"经验: {battle_data.get('experience', 0)}\n"
+                f"金钱: {home_data.get('money', 0)}\n"
+                f"好感度: {home_data.get('love', 0)}"
+            )
+        except Exception as e:
+            logger.error(f"格式化用户信息失败: {str(e)}")
+            return f"获取用户信息失败: {str(e)}"
+
+    async def add_money(self, user_id: str, amount: int) -> tuple[bool, str]:
+        """
+        增加用户金钱
+        :param user_id: 用户ID
+        :param amount: 增加的金额
+        :return: (是否成功, 结果消息)
+        """
+        try:
+            if amount <= 0:
+                return False, "金额必须为正整数"
+
+            home_data = await self.get_home_data(user_id)
+            home_data["money"] = home_data.get("money", 0) + amount
+            await self.update_home_data(user_id, home_data)
+
+            return True, f"成功增加 {amount} 金钱，当前金钱: {home_data['money']}"
+        except Exception as e:
+            logger.error(f"增加用户金钱失败: {str(e)}")
+            return False, f"操作失败: {str(e)}"
+
+    async def get_all_users_info(self) -> str:
+        """获取所有用户详细信息列表"""
+        try:
+            user_list = await self.get_user_list()
+            if not user_list:
+                return "暂无用户数据"
+
+            message = "用户列表:\n"
+            for user_id in user_list:
+                user_data = await self.get_user(user_id)
+                nickname = user_data.get("nickname", "未设置")
+                message += f"- {user_id} ({nickname})\n"
+
+            return message
+        except Exception as e:
+            logger.error(f"获取所有用户信息失败: {str(e)}")
+            return f"操作失败: {str(e)}"
