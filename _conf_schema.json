@@ -1,13 +1,13 @@
 {
     "enhanced_wife_system": {
-        "description": "老婆系统",
+        "description": "增强老婆系统",
         "type": "object",
         "hint": "",
         "items": {
             "date_cooldown": {
                 "description": "约会冷却时间",
                 "type": "int",
-                "hint": "约会功能的冷却时间（秒）",
+                "hint": "增强老婆系统约会功能的冷却时间（秒）",
                 "default": 0,
                 "min": 0,
                 "max": 86400
@@ -15,7 +15,7 @@
             "confession_cooldown": {
                 "description": "表白冷却时间",
                 "type": "int",
-                "hint": "表白功能的冷却时间（秒）",
+                "hint": "增强老婆系统表白功能的冷却时间（秒）",
                 "default": 0,
                 "min": 0,
                 "max": 86400
@@ -23,7 +23,7 @@
             "propose_cooldown": {
                 "description": "求婚冷却时间",
                 "type": "int",
-                "hint": "求婚功能的冷却时间（秒）",
+                "hint": "增强老婆系统求婚功能的冷却时间（秒）",
                 "default": 0,
                 "min": 0,
                 "max": 86400
